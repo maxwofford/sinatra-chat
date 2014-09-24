@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+	<head>
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/slate/bootstrap.min.css">
+	<style type="text/css">
+		#chat-log{max-height: 50%; }
+	</style>
+	</head>
+	<body>
+			<div id="chat-log"></div>
+			<input type="text" id="username" placeholder="Username">
+			<input type="text" id="message" placeholder="Message">
+			<button id="Send" onclick="send()">Send</button>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script>
+		/*
+			var socketURL = 'ws' + $(location).attr('href').substr(4) + 'message';
+			var socket = new WebSocket(socketURL, ["protocolOne", "protocolTwo"]);
+			socket.onopen = function (event) {
+  			socket.send(['',new Date(),"Guest has entered the chat"]); 
+			};
+			socket.onmessage = function (event) {
+		  	generateListEntree(event.data);
+			};
+			*/
+
+			function generateListEntree (recievedData) {
+				var div = $("<div><strong>"+recievedData[0]+" </strong><span>" + recievedData[2] + "</span></div>");
+				$("#chat-log").append(div);
+			}
+			function send() {
+				if ($('#message').val()) { //Confirm that the message exists
+					var username = $('#username').val()
+					if (!$('#username').val()) { // If no username is given, 'Guest' is default
+						username = 'Guest'
+					};
+					var message = [username, new Date(), $('#message').val()];
+					var json = JSON.stringify(message);
+					socket.send(json);
+				} else{
+					alert('You need a message!')
+				};
+			}
+			var socketURL = 'ws' + $(location).attr('href').substr(4) + 'message';
+			var socket = new WebSocket(socketURL, ['protocolOne', 'protocolTwo']);
+			socket.onopen = function (event) {
+  			socket.send(JSON.stringify(['',new Date(),'Guest has entered the chat'])); 
+			};
+			socket.onmessage = function (event) {
+		  	recievedData = JSON.parse(event.data)
+		  	generateListEntree(recievedData);
+			};
+
+		</script>
+	</body>
+</html>
